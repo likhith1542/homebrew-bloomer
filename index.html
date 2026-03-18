@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomer — Grow with intention</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0c1409;--paper:#f7f4ee;--sage:#4a7c59;--sage-light:#6a9e78;
+  --sage-pale:#e8f0e6;--bloom:#d4956a;--bloom-pale:#f5e6da;
+  --text:#1a2218;--muted:#6b7d68;--border:rgba(74,124,89,0.15);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Outfit',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--text);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden;cursor:none}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9000}
+.cursor{position:fixed;width:8px;height:8px;background:var(--sage);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:multiply}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid var(--sage);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:24px 60px;display:flex;align-items:center;justify-content:space-between;background:rgba(247,244,238,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:padding .3s}
+.nav-brand{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink);text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.nav-dot{width:8px;height:8px;background:var(--sage);border-radius:50%;animation:breathe 3s ease-in-out infinite}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-dl{background:var(--sage);color:#fff;text-decoration:none;font-size:13px;font-weight:500;padding:10px 22px;border-radius:100px;letter-spacing:.04em;transition:background .2s,transform .2s}
+.nav-dl:hover{background:var(--sage-light);transform:translateY(-1px)}
+.hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 60px 80px;gap:60px;overflow:hidden}
+.hero-glow{position:absolute;right:-10vw;top:50%;transform:translateY(-50%);width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,var(--sage-pale) 0%,transparent 70%);pointer-events:none}
+.hero-left{position:relative;z-index:1;margin-left:100px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);border:1px solid rgba(74,124,89,.3);padding:6px 14px;border-radius:100px;margin-bottom:28px;animation:fadeUp .9s ease both}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--sage);border-radius:50%;animation:breathe 2s ease-in-out infinite}
+.hero-title{font-family:var(--serif);font-size:clamp(56px,6vw,88px);font-weight:300;line-height:1.0;letter-spacing:-.03em;color:var(--ink);margin-bottom:12px;animation:fadeUp .9s .1s ease both}
+.hero-title strong{font-weight:600}
+.hero-title em{font-style:italic;color:var(--sage);display:block}
+.hero-sub{font-size:17px;color:var(--muted);max-width:420px;margin-bottom:44px;line-height:1.8;animation:fadeUp .9s .2s ease both}
+.hero-actions{display:flex;align-items:center;gap:20px;animation:fadeUp .9s .3s ease both}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);text-decoration:none;font-size:15px;font-weight:400;padding:16px 32px;border-radius:8px;transition:transform .2s,box-shadow .2s;letter-spacing:.01em}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(12,20,9,.2)}
+.btn-ghost{color:var(--muted);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px;transition:color .2s}
+.btn-ghost:hover{color:var(--text)}
+.hero-stats{margin-top:52px;display:flex;gap:32px;animation:fadeUp .9s .4s ease both}
+.stat-num{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ink);line-height:1}
+.stat-label{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+.stat-div{width:1px;background:var(--border)}
+.hero-right{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;animation:fadeUp .9s .15s ease both;margin-top:100px}
+.hero-right img{max-width:380px;width:100%;border-radius:20px;box-shadow:0 32px 80px rgba(12,20,9,.12),0 4px 16px rgba(12,20,9,.08)}
+
+/* ── INSTALL SECTION ── */
+.install{padding:100px 60px;background:var(--ink);position:relative;overflow:hidden}
+.install::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:70%;height:80%;background:radial-gradient(ellipse,rgba(74,124,89,.12) 0%,transparent 60%);pointer-events:none}
+.install-inner{position:relative;z-index:1;max-width:780px;margin:0 auto;text-align:center}
+.install .eyebrow{color:var(--sage-light)}
+.install-title{font-family:var(--serif);font-size:clamp(36px,4vw,54px);font-weight:300;letter-spacing:-.02em;line-height:1.1;color:var(--paper);margin-bottom:16px}
+.install-title em{font-style:italic;color:var(--sage-light)}
+.install-sub{font-size:15px;color:rgba(247,244,238,.5);margin-bottom:52px;max-width:480px;margin-left:auto;margin-right:auto}
+.install-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:52px;text-align:left}
+.install-step{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px}
+.install-step-num{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--sage-light);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.install-step-title{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--paper);margin-bottom:8px;letter-spacing:-.01em}
+.install-step-desc{font-size:13px;color:rgba(247,244,238,.45);line-height:1.7}
+
+/* Terminal blocks */
+.terminal{background:#0a0f0a;border:1px solid rgba(74,124,89,.25);border-radius:12px;overflow:hidden;margin-bottom:12px;text-align:left}
+.terminal-bar{background:rgba(255,255,255,.04);padding:10px 16px;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(255,255,255,.06)}
+.t-dot{width:10px;height:10px;border-radius:50%}
+.t-dot-r{background:#ff5f57}.t-dot-y{background:#ffbd2e}.t-dot-g{background:#28c840}
+.terminal-body{padding:20px 24px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.8}
+.t-comment{color:rgba(74,124,89,.7)}
+.t-prompt{color:var(--sage-light)}
+.t-cmd{color:#e8f0e8}
+.t-out{color:rgba(247,244,238,.35);font-size:12px}
+
+/* Copy button */
+.copy-wrap{position:relative}
+.copy-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:rgba(74,124,89,.2);border:1px solid rgba(74,124,89,.3);
+  color:var(--sage-light);font-size:11px;font-weight:500;
+  padding:5px 12px;border-radius:6px;cursor:pointer;
+  font-family:var(--sans);letter-spacing:.04em;
+  transition:background .2s,color .2s;white-space:nowrap
+}
+.copy-btn:hover{background:rgba(74,124,89,.35);color:#fff}
+.copy-btn.copied{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+.install-note{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(74,124,89,.08);border:1px solid rgba(74,124,89,.2);
+  border-radius:10px;padding:14px 20px;
+  font-size:13px;color:rgba(247,244,238,.5);
+  margin-top:8px;
+}
+.install-note strong{color:var(--sage-light);font-weight:500}
+
+/* ── FEATURES ── */
+.features{padding:120px 60px;position:relative}
+.sec-head{text-align:center;margin-bottom:80px}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:16px}
+.sec-title{font-family:var(--serif);font-size:clamp(36px,4vw,56px);font-weight:300;letter-spacing:-.02em;line-height:1.1;color:var(--ink)}
+.sec-title em{font-style:italic;font-weight:300}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.feat-card{background:var(--paper);padding:44px 40px;transition:background .3s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;background:var(--sage-pale);transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.feat-card:hover::before{transform:translateY(0)}
+.feat-card>*{position:relative;z-index:1}
+.feat-icon{width:44px;height:44px;background:var(--sage-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:20px;transition:background .3s}
+.feat-card:hover .feat-icon{background:#fff}
+.feat-name{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.feat-desc{font-size:14px;color:var(--muted);line-height:1.8}
+
+/* ── HOW ── */
+.how{padding:120px 60px;background:#f0ede6;position:relative;overflow:hidden}
+.how .eyebrow{color:var(--sage)}
+.how-head{text-align:center;margin-bottom:80px;position:relative;z-index:1}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;z-index:1}
+.steps::before{content:'';position:absolute;top:28px;left:calc(12.5% + 28px);right:calc(12.5% + 28px);height:1px;background:linear-gradient(90deg,transparent,rgba(74,124,89,.3) 20%,rgba(74,124,89,.3) 80%,transparent)}
+.step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 20px}
+.step-n{width:56px;height:56px;border:1px solid rgba(74,124,89,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:600;color:var(--sage);background:#f0ede6;margin-bottom:24px;position:relative;z-index:1;transition:all .3s}
+.step:hover .step-n{background:var(--sage);color:#fff;border-color:var(--sage);transform:scale(1.1)}
+.step-t{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.step-d{font-size:13px;color:var(--muted);line-height:1.8}
+
+/* ── GROWTH ── */
+.growth{padding:120px 60px}
+.growth-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.g-stages{display:flex;flex-direction:column;gap:3px}
+.g-stage{display:flex;align-items:center;gap:20px;padding:20px 24px;border-radius:12px;border:1px solid transparent;transition:all .3s;cursor:default}
+.g-stage:hover{background:#fff;border-color:var(--border);box-shadow:0 4px 24px rgba(12,20,9,.06);transform:translateX(6px)}
+.g-emoji{font-size:28px;line-height:1;flex-shrink:0}
+.g-info{flex:1}
+.g-name{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.g-detail{font-size:13px;color:var(--muted)}
+.g-cares{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--sage)}
+.g-title{font-family:var(--serif);font-size:clamp(32px,3.5vw,48px);font-weight:300;line-height:1.15;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px}
+.g-title em{font-style:italic;color:var(--sage)}
+.g-body{font-size:16px;color:var(--muted);line-height:1.9;margin-bottom:32px}
+.g-note{display:flex;gap:12px;align-items:flex-start;padding:20px;background:var(--sage-pale);border-radius:12px;border-left:3px solid var(--sage)}
+.g-note-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+.g-note-text{font-size:13px;color:var(--sage);line-height:1.7}
+
+/* ── CTA ── */
+.cta-sec{padding:120px 60px;text-align:center;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--sage-pale) 0%,var(--bloom-pale) 100%)}
+.cta-inner{position:relative;z-index:1}
+.cta-title{font-family:var(--serif);font-size:clamp(40px,5vw,72px);font-weight:300;letter-spacing:-.03em;line-height:1.05;color:var(--ink);margin-bottom:20px}
+.cta-title strong{font-weight:600}
+.cta-sub{font-size:17px;color:var(--muted);margin-bottom:44px;max-width:400px;margin-left:auto;margin-right:auto}
+
+/* CTA terminal */
+.cta-terminal{max-width:520px;margin:0 auto 20px;text-align:left}
+.cta-note{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-top:20px}
+
+footer{padding:40px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.foot-brand{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px}
+.foot-copy{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.foot-links{display:flex;gap:24px}
+.foot-links a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.foot-links a:hover{color:var(--text)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media(max-width:900px){
+  nav{padding:20px 24px}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr;padding:100px 24px 60px;text-align:center}
+  .hero-left{margin-left:0}
+  .hero-actions{justify-content:center}
+  .hero-stats{justify-content:center}
+  .hero-right{display:none}
+  .install{padding:80px 24px}
+  .install-steps{grid-template-columns:1fr}
+  .features,.how,.growth,.cta-sec{padding:80px 24px}
+  .feat-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr;gap:40px}
+  .steps::before{display:none}
+  .growth-inner{grid-template-columns:1fr;gap:48px}
+  footer{padding:32px 24px;flex-direction:column;gap:16px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cring"></div>
+
+<nav>
+  <a href="#" class="nav-brand"><div class="nav-dot"></div>Bloomer</a>
+  <div class="nav-links">
+    <a href="#install">Install</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#growth">Growth</a>
+    <a href="#install" class="nav-dl">Get Bloomer</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-left">
+    <div class="hero-badge">🌱 Free Mac app · Lives in your menu bar</div>
+    <h1 class="hero-title"><strong>Grow</strong> with<br><em>intention.</em></h1>
+    <p class="hero-sub">A tiny plant that lives in your menu bar. Set reminders, care for it daily, and watch it bloom — one habit at a time.</p>
+    <div class="hero-actions">
+      <a href="#install" class="btn-primary">
+        Install with Homebrew
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#how" class="btn-ghost">See how it works <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">5</div><div class="stat-label">Growth stages</div></div>
+      <div class="stat-div"></div>
+      <div><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
+      <div class="stat-div"></div>
+      <div><div class="stat-num">macOS</div><div class="stat-label">13+ Ventura</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="./image.png" alt="Bloomer plant"/>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section class="install" id="install">
+  <div class="install-inner">
+    <div class="eyebrow reveal">One command away</div>
+    <h2 class="install-title reveal d1">Install in <em>seconds</em><br>with Homebrew</h2>
+    <p class="install-sub reveal d2">No App Store. No account. Just paste and press enter.</p>
+
+    <div class="install-steps reveal d1">
+      <div class="install-step">
+        <div class="install-step-num">Step 01</div>
+        <div class="install-step-title">Get Homebrew</div>
+        <div class="install-step-desc">If you don't have Homebrew installed yet, paste this in Terminal first.</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">Step 02</div>
+        <div class="install-step-title">Add the tap</div>
+        <div class="install-step-desc">Add Liks' Homebrew tap so your Mac knows where to find Bloomer.</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">Step 03</div>
+        <div class="install-step-title">Install Bloomer</div>
+        <div class="install-step-desc">Install the cask and Bloomer appears in your menu bar instantly.</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Install Homebrew -->
+    <div class="terminal reveal d1" style="margin-bottom:16px">
+      <div class="terminal-bar">
+        <div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div>
+        <span style="margin-left:8px;font-size:12px;color:rgba(255,255,255,.3);font-family:monospace">Terminal — Step 1 (skip if you have Homebrew)</span>
+      </div>
+      <div class="terminal-body copy-wrap">
+        <div class="t-comment"># Install Homebrew (skip if already installed)</div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd" id="cmd1">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</span></div>
+        <button class="copy-btn" onclick="copyCmd('cmd1',this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Tap -->
+    <div class="terminal reveal d2" style="margin-bottom:16px">
+      <div class="terminal-bar">
+        <div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div>
+        <span style="margin-left:8px;font-size:12px;color:rgba(255,255,255,.3);font-family:monospace">Terminal — Step 2</span>
+      </div>
+      <div class="terminal-body copy-wrap">
+        <div class="t-comment"># Add the Bloomer tap</div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd" id="cmd2">brew tap likhith1542/homebrew-bloomer</span></div>
+        <button class="copy-btn" onclick="copyCmd('cmd2',this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Install -->
+    <div class="terminal reveal d3" style="margin-bottom:32px">
+      <div class="terminal-bar">
+        <div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div>
+        <span style="margin-left:8px;font-size:12px;color:rgba(255,255,255,.3);font-family:monospace">Terminal — Step 3</span>
+      </div>
+      <div class="terminal-body copy-wrap">
+        <div class="t-comment"># Install Bloomer</div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd" id="cmd3">brew install --cask bloomer</span></div>
+        <div class="t-out">🌱 Installing Bloomer...</div>
+        <div class="t-out">✅ Bloomer is now in your menu bar</div>
+        <button class="copy-btn" onclick="copyCmd('cmd3',this)">Copy</button>
+      </div>
+    </div>
+
+    <!-- Update command -->
+    <div class="terminal reveal" style="margin-bottom:32px">
+      <div class="terminal-bar">
+        <div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div>
+        <span style="margin-left:8px;font-size:12px;color:rgba(255,255,255,.3);font-family:monospace">Terminal — Update anytime</span>
+      </div>
+      <div class="terminal-body copy-wrap">
+        <div class="t-comment"># Keep Bloomer up to date</div>
+        <div><span class="t-prompt">$ </span><span class="t-cmd" id="cmd4">brew upgrade --cask bloomer</span></div>
+        <button class="copy-btn" onclick="copyCmd('cmd4',this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="install-note reveal">
+      <span>🔒</span>
+      <span>First launch may show a security prompt — <strong>right-click the app → Open</strong> to proceed. This is a one-time step.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="sec-head reveal">
+    <div class="eyebrow">What makes it special</div>
+    <h2 class="sec-title">Everything you need,<br><em>nothing you don't</em></h2>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card reveal"><div class="feat-icon">🌿</div><div class="feat-name">Lives in menu bar</div><div class="feat-desc">Bloomer sits quietly at the top of your screen. No windows, no Dock icon — just a tiny swaying plant always within reach.</div></div>
+    <div class="feat-card reveal d1"><div class="feat-icon">⏰</div><div class="feat-name">Smart reminders</div><div class="feat-desc">Set daily, weekly, or custom interval reminders. When it's time to care, macOS notifies you with a water drop sound.</div></div>
+    <div class="feat-card reveal d2"><div class="feat-icon">🌱</div><div class="feat-name">5 growth stages</div><div class="feat-desc">Your plant starts as a seed and grows through Sprout, Seedling, Plant, and Bloom — each stage a milestone worth celebrating.</div></div>
+    <div class="feat-card reveal"><div class="feat-icon">🎯</div><div class="feat-name">Your targets, your pace</div><div class="feat-desc">Set exactly how many cares each stage requires. 5 or 500 — you decide how long each phase of growth takes.</div></div>
+    <div class="feat-card reveal d1"><div class="feat-icon">💾</div><div class="feat-name">Persistent memory</div><div class="feat-desc">Your plant's progress is saved forever. Restart your Mac — your plant picks up exactly where you left off.</div></div>
+    <div class="feat-card reveal d2"><div class="feat-icon">🌙</div><div class="feat-name">Dark &amp; light mode</div><div class="feat-desc">Adapts automatically to your macOS appearance. The plant looks beautiful in both — crisp greens on dark, rich on light.</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-head reveal">
+    <div class="eyebrow">Simple by design</div>
+    <h2 class="sec-title">Four steps to<br><em style="color:var(--sage)">full bloom</em></h2>
+  </div>
+  <div class="steps">
+    <div class="step reveal"><div class="step-n">1</div><div class="step-t">Install</div><div class="step-d">One Homebrew command. Bloomer launches straight into your menu bar.</div></div>
+    <div class="step reveal d1"><div class="step-n">2</div><div class="step-t">Set targets</div><div class="step-d">Choose how many cares each growth stage needs — from 5 to 500.</div></div>
+    <div class="step reveal d2"><div class="step-n">3</div><div class="step-t">Add reminders</div><div class="step-d">Daily, weekly, or custom intervals. Bloomer nudges you when it's time.</div></div>
+    <div class="step reveal d3"><div class="step-n">4</div><div class="step-t">Watch it bloom</div><div class="step-d">Care for your plant consistently. Watch it grow through all five stages.</div></div>
+  </div>
+</section>
+
+<!-- GROWTH -->
+<section class="growth" id="growth">
+  <div class="growth-inner">
+    <div class="g-stages reveal">
+      <div class="g-stage"><div class="g-emoji">🌰</div><div class="g-info"><div class="g-name">Seed</div><div class="g-detail">The beginning. A tiny bump of possibility.</div></div><div class="g-cares">Start</div></div>
+      <div class="g-stage"><div class="g-emoji">🌱</div><div class="g-info"><div class="g-name">Sprout</div><div class="g-detail">First shoot. The habit takes root.</div></div><div class="g-cares">5</div></div>
+      <div class="g-stage"><div class="g-emoji">🪴</div><div class="g-info"><div class="g-name">Seedling</div><div class="g-detail">Leaves emerge. Consistency builds.</div></div><div class="g-cares">10</div></div>
+      <div class="g-stage"><div class="g-emoji">🌿</div><div class="g-info"><div class="g-name">Plant</div><div class="g-detail">Full structure. The habit is strong.</div></div><div class="g-cares">15</div></div>
+      <div class="g-stage"><div class="g-emoji">🌸</div><div class="g-info"><div class="g-name">Bloom</div><div class="g-detail">Peak life. You made it.</div></div><div class="g-cares">20</div></div>
+    </div>
+    <div class="reveal d1">
+      <h2 class="g-title">Growth at<br><em>your pace,</em><br>on your terms.</h2>
+      <p class="g-body">There's no right answer for how long each stage takes. Some people want to reach bloom in a week. Others take a year. Bloomer doesn't judge — it just grows with you.</p>
+      <div class="g-note"><div class="g-note-icon">💡</div><div class="g-note-text">Tip: Match your cares to a real-world habit. Water your plant every time you meditate, exercise, or finish a deep work session.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <h2 class="cta-title reveal">One command.<br><strong>A lifetime of bloom.</strong></h2>
+    <p class="cta-sub reveal d1">Free forever. No account. No tracking. Just you and your plant.</p>
+    <div class="cta-terminal reveal d2">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div>
+        </div>
+        <div class="terminal-body copy-wrap">
+          <div><span class="t-prompt">$ </span><span class="t-cmd" id="cmd-cta">brew install --cask bloomer</span></div>
+          <button class="copy-btn" onclick="copyCmd('cmd-cta',this)">Copy</button>
+        </div>
+      </div>
+    </div>
+    <p class="cta-note reveal d3">macOS 13 Ventura or later &nbsp;·&nbsp; Apple Silicon &amp; Intel &nbsp;·&nbsp; Free</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-brand"><div class="nav-dot"></div>Bloomer</div>
+  <div class="foot-copy">© 2025 · Made with 🌱 by Liks</div>
+  <div class="foot-links">
+    <a href="https://github.com/likhith1542/homebrew-bloomer">GitHub</a>
+    <a href="mailto:your@email.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+(function tick(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick)})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='14px';cursor.style.height='14px';ring.style.width='48px';ring.style.height='48px'});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='8px';cursor.style.height='8px';ring.style.width='32px';ring.style.height='32px'});
+});
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.padding=scrollY>60?'14px 60px':'24px 60px'});
+
+function copyCmd(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  });
+}
+</script>
+</body>
+</html>
